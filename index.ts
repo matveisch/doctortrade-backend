@@ -5,6 +5,7 @@ import mongoose, { ConnectOptions } from "mongoose";
 import { Request, Response } from "express";
 import videoRouter from "./src/routes/videoRoutes";
 import userRouter from "./src/routes/userRoutes";
+require("./src/passport");
 
 dotenv.config();
 

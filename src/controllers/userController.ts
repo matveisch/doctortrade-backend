@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import User, { UserType } from "../models/userModel";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import passport from "passport";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // user user – username and password
 export const create_user = (
@@ -50,4 +55,26 @@ export const create_user = (
       }
     }
   );
+};
+
+export const log_in = function (req: Request, res: Response) {
+  passport.authenticate("local", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        message: "Something is not right",
+        user: user,
+      });
+    }
+
+    req.login(user, { session: false }, (err) => {
+      if (err) res.send(err);
+
+      // generate a signed son web token with the contents of user object and return it in the response
+      const token = jwt.sign(
+        { user },
+        process.env.JWT_SECRET ? process.env.JWT_SECRET : ""
+      );
+      return res.json({ user, token });
+    });
+  })(req, res);
 };
