@@ -4,6 +4,7 @@ import cors from "cors";
 import mongoose, { ConnectOptions } from "mongoose";
 import { Request, Response } from "express";
 import videoRouter from "./src/routes/videoRoutes";
+import userRouter from "./src/routes/userRoutes";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/videos", videoRouter);
+app.use("/user", userRouter);
 
 app.listen(8000, function () {
   console.log("Listening on port 8000!");
