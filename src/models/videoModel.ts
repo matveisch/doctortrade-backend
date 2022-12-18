@@ -1,4 +1,4 @@
-import mongoose, { model, Schema, Model, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface VideoType extends Document {
   name: string;

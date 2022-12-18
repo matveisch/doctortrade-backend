@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import Video, { VideoType } from "../models/videoModel";
-const fs = require("fs");
+import Video from "../models/videoModel";
+import fs, { PathLike } from "fs";
 
-exports.videos_list = async (
+export const videos_list = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -15,7 +15,11 @@ exports.videos_list = async (
   }
 };
 
-exports.get_video = async (req: Request, res: Response, next: NextFunction) => {
+export const get_video = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const video = await Video.findById(req.params.videoid);
 
@@ -24,7 +28,7 @@ exports.get_video = async (req: Request, res: Response, next: NextFunction) => {
       res.status(400).send("Requires Range header");
     }
 
-    const videoPath = video?.path;
+    const videoPath: PathLike = video ? video.path : "";
     const videoSize = fs.statSync(videoPath).size;
     const CHUNK_SIZE = 10 ** 6;
 
@@ -43,6 +47,6 @@ exports.get_video = async (req: Request, res: Response, next: NextFunction) => {
     const videoStream = fs.createReadStream(videoPath, { start, end });
     videoStream.pipe(res);
   } catch (err) {
-    if (err) return next(err);
+    return next(err);
   }
 };

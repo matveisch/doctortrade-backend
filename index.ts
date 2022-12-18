@@ -1,16 +1,20 @@
-const express = require("express");
-require("dotenv").config();
+import express from "express";
+import dotenv from "dotenv";
 import cors from "cors";
+import mongoose, { ConnectOptions } from "mongoose";
 import { Request, Response } from "express";
+import videoRouter from "./src/routes/videoRoutes";
 
-const videoRouter = require("./src/routes/videoRoutes");
+dotenv.config();
 
 const app = express();
 
-const mongoose = require("mongoose");
 const mongoDB = process.env.MONGODB_URL;
 mongoose.set("strictQuery", true);
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`${mongoDB}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+} as ConnectOptions);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
