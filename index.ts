@@ -1,33 +1,27 @@
 const express = require("express");
-const fs = require("fs");
+require("dotenv").config();
+import cors from "cors";
+import { Request, Response } from "express";
+
+const videoRouter = require("./src/routes/videoRoutes");
 
 const app = express();
 
-app.get("/", function (req: any, res: any) {
-  res.sendFile(__dirname + "/index.html");
+const mongoose = require("mongoose");
+const mongoDB = process.env.MONGODB_URL;
+mongoose.set("strictQuery", true);
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+
+app.use(express.json());
+app.use(cors());
+
+app.get("/", (req: Request, res: Response) => {
+  res.json("hello world");
 });
 
-app.get("/video", function (req: any, res: any) {
-  const range = req.headers.range;
-  if (!range) {
-    res.status(400).send("Requires Range header");
-  }
-  const videoPath = "./src/data/sample.mp4";
-  const videoSize = fs.statSync(videoPath).size;
-  const CHUNK_SIZE = 10 ** 6;
-  const start = Number(range.replace(/\D/g, ""));
-  const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-  const contentLength = end - start + 1;
-  const headers = {
-    "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-    "Accept-Ranges": "bytes",
-    "Content-Length": contentLength,
-    "Content-Type": "video/mp4",
-  };
-  res.writeHead(206, headers);
-  const videoStream = fs.createReadStream(videoPath, { start, end });
-  videoStream.pipe(res);
-});
+app.use("/videos", videoRouter);
 
 app.listen(8000, function () {
   console.log("Listening on port 8000!");
