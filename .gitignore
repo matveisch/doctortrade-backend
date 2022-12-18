@@ -2,3 +2,4 @@
 .eslintrc.json
 .env
 /src/data
+.DS_Store

@@ -8,8 +8,15 @@ export const create_user = (
   res: Response,
   next: NextFunction
 ) => {
+  // create user only if unique email, phone and username provided
   User.findOne(
-    { username: req.body.username },
+    {
+      $or: [
+        { username: req.body.username },
+        { email: req.body.email },
+        { phone: req.body.phone },
+      ],
+    },
     (err: Error | undefined, user: UserType) => {
       if (err) return next(err);
 
@@ -38,7 +45,7 @@ export const create_user = (
         );
       } else {
         return res.status(400).json({
-          message: "choose different username",
+          message: "either username, or email, or phone already exists",
         });
       }
     }
