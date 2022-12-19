@@ -9,7 +9,7 @@ var cors_1 = __importDefault(require("cors"));
 var mongoose_1 = __importDefault(require("mongoose"));
 var videoRoutes_1 = __importDefault(require("./routes/videoRoutes"));
 var userRoutes_1 = __importDefault(require("./routes/userRoutes"));
-require("./src/passport");
+require("./passport");
 dotenv_1.default.config();
 var app = (0, express_1.default)();
 var mongoDB = process.env.MONGODB_URL;
