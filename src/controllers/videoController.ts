@@ -50,3 +50,21 @@ export const get_video = async (
     return next(err);
   }
 };
+
+export const create_video = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const video = new Video({
+    name: req.body.name,
+    path: req.body.path,
+    courseName: req.body.courseName,
+  });
+
+  video.save((error) => {
+    if (error) return next(error);
+
+    res.json(video);
+  });
+};

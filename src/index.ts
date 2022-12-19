@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import mongoose, { ConnectOptions } from "mongoose";
 import { Request, Response } from "express";
-import videoRouter from "./src/routes/videoRoutes";
-import userRouter from "./src/routes/userRoutes";
-require("./src/passport");
+import videoRouter from "./routes/videoRoutes";
+import userRouter from "./routes/userRoutes";
+import "./passport.ts";
 
 dotenv.config();
 
