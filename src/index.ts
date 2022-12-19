@@ -11,6 +11,8 @@ dotenv.config();
 
 const app = express();
 
+const port = process.env.PORT || 8000;
+
 const mongoDB = process.env.MONGODB_URL;
 mongoose.set("strictQuery", true);
 mongoose.connect(`${mongoDB}`, {
@@ -30,6 +32,6 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/videos", videoRouter);
 app.use("/user", userRouter);
 
-app.listen(8000, function () {
+app.listen(port, function () {
   console.log("Listening on port 8000!");
 });
