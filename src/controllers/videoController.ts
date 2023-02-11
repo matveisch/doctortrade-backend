@@ -21,6 +21,15 @@ export const get_video_data = async (req: Request, res: Response, next: NextFunc
   }
 };
 
+export const set_video_watch_status = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const video = await Video.findByIdAndUpdate(req.params.videoid, { watched: req.body.watched }, { new: true });
+    res.json(video);
+  } catch (e) {
+    return next(e);
+  }
+};
+
 export const get_video = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const video = await Video.findById(req.params.videoid);

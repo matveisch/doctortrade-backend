@@ -8,41 +8,38 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // user user – username and password
+// email@mail.com user
 export const create_user = (req: Request, res: Response, next: NextFunction) => {
   // create user only if unique email, phone and username provided
-  User.findOne(
-    {
-      $or: [{ username: req.body.username }, { email: req.body.email }, { phone: req.body.phone }],
-    },
-    (err: Error | undefined, user: UserType) => {
-      if (err) return next(err);
+  User.findOne({ email: req.body.email }, (err: Error | undefined, user: UserType) => {
+    if (err) return next(err);
 
-      if (!user) {
-        bcrypt.hash(req.body.password, 10, (err: Error | undefined, hashedPass: string) => {
-          if (err) return next(err);
+    if (!user) {
+      bcrypt.hash(req.body.password, 10, (err: Error | undefined, hashedPass: string) => {
+        if (err) return next(err);
 
-          const user = new User({
-            firstName: req.body.firstName,
-            secondName: req.body.secondName,
-            username: req.body.username,
-            password: hashedPass,
-            phone: req.body.phone,
-            email: req.body.email,
-          });
-
-          user.save(error => {
-            if (error) return next(error);
-
-            res.json(user);
-          });
+        const user = new User({
+          firstName: req.body.firstName,
+          secondName: req.body.secondName,
+          email: req.body.email,
+          password: hashedPass,
+          phone: req.body.phone,
+          isAdmin: req.body.isAdmin,
+          hasPaid: req.body.hasPaid,
         });
-      } else {
-        return res.status(400).json({
-          message: 'either username, or email, or phone already exists',
+
+        user.save(error => {
+          if (error) return next(error);
+
+          res.json(user);
         });
-      }
-    },
-  );
+      });
+    } else {
+      return res.status(400).json({
+        message: 'email exists',
+      });
+    }
+  });
 };
 
 export const log_in = function (req: Request, res: Response) {

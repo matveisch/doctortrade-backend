@@ -12,11 +12,11 @@ dotenv.config();
 passport.use(
   new LocalStrategy.Strategy(
     {
-      usernameField: 'username',
+      usernameField: 'email',
       passwordField: 'password',
     },
-    function (username, password, cb) {
-      return User.findOne({ username })
+    function (email, password, cb) {
+      return User.findOne({ email })
         .then(user => {
           if (!user) return cb(null, false, { message: 'Incorrect username.' });
 
