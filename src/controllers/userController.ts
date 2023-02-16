@@ -20,10 +20,8 @@ export const create_user = (req: Request, res: Response, next: NextFunction) => 
 
         const user = new User({
           firstName: req.body.firstName,
-          secondName: req.body.secondName,
           email: req.body.email,
           password: hashedPass,
-          phone: req.body.phone,
           isAdmin: req.body.isAdmin,
           hasPaid: req.body.hasPaid,
         });
@@ -65,6 +63,34 @@ export const get_users = async function (req: Request, res: Response, next: Next
   try {
     const users = await User.find();
     res.json(users);
+  } catch (e) {
+    return next(e);
+  }
+};
+
+export const get_user = async function (req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findById(req.params.userid).select('firstName secondName email facebook telegram linkedin');
+    res.json(user);
+  } catch (e) {
+    return next(e);
+  }
+};
+
+export const update_user = async function (req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.userid,
+      {
+        firstName: req.body.firstName,
+        secondName: req.body.secondName,
+        facebook: req.body.facebook,
+        telegram: req.body.telegram,
+        linkedin: req.body.telegram,
+      },
+      { new: true },
+    ).select('firstName secondName email facebook telegram linkedin');
+    res.json(user);
   } catch (e) {
     return next(e);
   }
