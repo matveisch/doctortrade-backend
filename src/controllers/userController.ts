@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import dotenv from 'dotenv';
-
+import { sendToken } from '../tokenSender';
 dotenv.config();
 
 // user user – username and password
@@ -24,13 +24,16 @@ export const create_user = (req: Request, res: Response, next: NextFunction) => 
           password: hashedPass,
           isAdmin: req.body.isAdmin,
           hasPaid: req.body.hasPaid,
+          confirmed: false,
         });
 
         user.save(error => {
           if (error) return next(error);
-
-          res.json(user);
         });
+
+        sendToken(user._id);
+
+        res.json(user);
       });
     } else {
       return res.status(400).json({
@@ -144,4 +147,25 @@ export const change_password = async function (req: Request, res: Response, next
   } catch (error) {
     return next(error);
   }
+};
+
+export const verify = async function (req: Request, res: Response, next: NextFunction) {
+  const { token } = req.params;
+
+  // Verifying the JWT token
+  jwt.verify(token, process.env.JWT_SECRET ? process.env.JWT_SECRET : '', function (err, decoded) {
+    if (err) {
+      console.log(err);
+      res.send('Email verification failed, possibly the link is invalid or expired');
+    } else {
+      const { userId } = decoded as { userId: string };
+      User.findByIdAndUpdate(userId, { confirmed: true }, { new: true }, function (err, user) {
+        if (err) return next(err);
+        res.json({
+          message: 'Email verified successfully',
+          user,
+        });
+      });
+    }
+  });
 };
