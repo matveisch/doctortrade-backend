@@ -89,9 +89,59 @@ export const update_user = async function (req: Request, res: Response, next: Ne
         linkedin: req.body.telegram,
       },
       { new: true },
-    ).select('firstName secondName email facebook telegram linkedin');
+    ).select('firstName secondName email facebook telegram linkedin isAdmin hasPaid');
     res.json(user);
   } catch (e) {
     return next(e);
+  }
+};
+
+export const update_user_email = async function (req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findById(req.params.userid);
+    if (user) {
+      bcrypt.compare(req.body.password, user.password, (err, response) => {
+        if (response) {
+          User.findByIdAndUpdate(req.params.userid, { email: req.body.email }, { new: true })
+            .select('firstName secondName email facebook telegram linkedin isAdmin hasPaid')
+            .then(user => {
+              return res.json(user);
+            });
+        } else {
+          return res.status(400).json({
+            message: 'incorrect password',
+          });
+        }
+      });
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const change_password = async function (req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findById(req.params.userid);
+    if (user) {
+      bcrypt.compare(req.body.oldPassword, user.password, (err, response) => {
+        if (response) {
+          bcrypt.hash(req.body.newPassword, 10, (err: Error | undefined, hashedPass: string) => {
+            if (err) return next(err);
+
+            User.findByIdAndUpdate(req.params.userid, { password: hashedPass }, { new: true })
+              .select('firstName secondName email facebook telegram linkedin isAdmin hasPaid')
+              .then(() => {
+                return res.json({ message: 'password changed' });
+              });
+          });
+        } else {
+          return res.status(400).json({
+            message: 'incorrect password',
+          });
+        }
+      });
+    }
+  } catch (error) {
+    return next(error);
   }
 };
