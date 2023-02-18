@@ -31,7 +31,7 @@ export const create_user = (req: Request, res: Response, next: NextFunction) => 
           if (error) return next(error);
         });
 
-        sendToken(user._id);
+        sendToken(user._id, user.email);
 
         res.json(user);
       });
@@ -49,6 +49,13 @@ export const log_in = function (req: Request, res: Response) {
       return res.status(400).json({
         message: 'Something is not right',
         user: user,
+      });
+    }
+
+    if (!user.confirmed) {
+      sendToken(user._id, user.email);
+      return res.status(400).json({
+        message: 'Please verify your email',
       });
     }
 

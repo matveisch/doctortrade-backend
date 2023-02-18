@@ -12,14 +12,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export function sendToken(userId: string) {
+export function sendToken(userId: string, email: string) {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET ? process.env.JWT_SECRET : '', {
     expiresIn: '10m',
   });
 
   const mailConfigurations = {
     from: 'email@mail.com',
-    to: 'voinichmatvei@gmail.com',
+    to: email,
     // Subject of Email
     subject: 'Email Verification',
     // This would be the text of email body
