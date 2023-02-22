@@ -5,8 +5,9 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import { Request, Response } from 'express';
 import videoRouter from './routes/videoRoutes';
 import userRouter from './routes/userRoutes';
-import './passport';
 import sectionRoutes from './routes/sectionRoutes';
+import courseRoutes from './routes/courseRoutes';
+import './passport';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/videos', videoRouter);
 app.use('/user', userRouter);
 app.use('/section', sectionRoutes);
+app.use('/course', courseRoutes);
 
 app.listen(port, function () {
   console.log('Listening on port 8000!');

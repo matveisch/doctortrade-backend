@@ -18,12 +18,15 @@ export function sendToken(userId: string, email: string) {
   });
 
   const mailConfigurations = {
-    from: 'email@mail.com',
+    from: 'email@email.com',
     to: email,
-    // Subject of Email
     subject: 'Email Verification',
-    // This would be the text of email body
-    text: `Hi! There, You have recently visited our website and entered your email. Please follow the given link to verify your email ${process.env.HOST}${process.env.PORT}/verify/${token}. Thanks`,
+    text: `
+      Hi! There, You have recently visited 
+      our website and entered your email. 
+      Please follow the given link to verify your 
+      email ${process.env.HOST}${process.env.PORT}/user/verify/${token}. Thanks
+    `,
   };
 
   transporter.sendMail(mailConfigurations, function (error, info) {
