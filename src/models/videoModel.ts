@@ -1,11 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { SectionType } from './sectionModel';
+import { CourseType } from './courseModel';
 
 export interface VideoType extends Document {
   name: string;
   path: string;
   watched: boolean;
-  course: string;
+  course: CourseType;
   description: string;
   section: SectionType;
 }
@@ -15,7 +16,7 @@ const VideoSchema: Schema = new Schema({
   path: { type: String, required: true },
   watched: { type: Boolean, required: true },
   description: { type: String, required: true },
-  course: { type: String, required: true, maxLength: 100 },
+  course: { type: Schema.Types.ObjectId, ref: 'Course' },
   section: { type: Schema.Types.ObjectId, ref: 'Section' },
 });
 

@@ -2,10 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import Video from '../models/videoModel';
 import Section from '../models/sectionModel';
 import fs, { PathLike } from 'fs';
+import CourseModel from '../models/courseModel';
 
 export const videos_list = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const videos = await Video.find().populate('section');
+    const videos = await Video.find().populate('section').populate('course');
     res.json(videos);
   } catch (err) {
     return next(err);
@@ -14,7 +15,7 @@ export const videos_list = async (req: Request, res: Response, next: NextFunctio
 
 export const get_video_data = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const video = await Video.findById(req.params.videoid).populate('section');
+    const video = await Video.findById(req.params.videoid).populate('section').populate('course');
     res.json(video);
   } catch (e) {
     return next(e);
@@ -70,13 +71,38 @@ export const create_video = async (req: Request, res: Response, next: NextFuncti
     const video = new Video({
       name: req.body.name,
       path: req.body.path,
-      course: req.body.course,
+      course: section?.course,
       watched: req.body.watched,
       description: req.body.description,
       section: section,
     });
 
     await video.save();
+
+    res.json(video);
+  } catch (e) {
+    return next(e);
+  }
+};
+
+export const update_video = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const section = await Section.findById(req.body.sectionID);
+
+    const video = await Video.findByIdAndUpdate(
+      req.params.videoid,
+      {
+        name: req.body.name,
+        path: req.body.path,
+        course: section?.course,
+        watched: req.body.watched,
+        description: req.body.description,
+        section: section,
+      },
+      { new: true },
+    )
+      .populate('section')
+      .populate('course');
 
     res.json(video);
   } catch (e) {

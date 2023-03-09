@@ -23,7 +23,7 @@ export const create_user = (req: Request, res: Response, next: NextFunction) => 
           email: req.body.email,
           password: hashedPass,
           isAdmin: req.body.isAdmin,
-          hasPaid: req.body.hasPaid,
+          courses: [],
           confirmed: false,
         });
 
@@ -80,7 +80,7 @@ export const get_users = async function (req: Request, res: Response, next: Next
 
 export const get_user = async function (req: Request, res: Response, next: NextFunction) {
   try {
-    const user = await User.findById(req.params.userid).select('firstName secondName email facebook telegram linkedin');
+    const user = await User.findById(req.params.userid).populate('courses');
     res.json(user);
   } catch (e) {
     return next(e);
@@ -99,7 +99,7 @@ export const update_user = async function (req: Request, res: Response, next: Ne
         linkedin: req.body.telegram,
       },
       { new: true },
-    ).select('firstName secondName email facebook telegram linkedin isAdmin hasPaid');
+    );
     res.json(user);
   } catch (e) {
     return next(e);
@@ -112,11 +112,9 @@ export const update_user_email = async function (req: Request, res: Response, ne
     if (user) {
       bcrypt.compare(req.body.password, user.password, (err, response) => {
         if (response) {
-          User.findByIdAndUpdate(req.params.userid, { email: req.body.email }, { new: true })
-            .select('firstName secondName email facebook telegram linkedin isAdmin hasPaid')
-            .then(user => {
-              return res.json(user);
-            });
+          User.findByIdAndUpdate(req.params.userid, { email: req.body.email }, { new: true }).then(user => {
+            return res.json(user);
+          });
         } else {
           return res.status(400).json({
             message: 'incorrect password',
@@ -138,11 +136,9 @@ export const change_password = async function (req: Request, res: Response, next
           bcrypt.hash(req.body.newPassword, 10, (err: Error | undefined, hashedPass: string) => {
             if (err) return next(err);
 
-            User.findByIdAndUpdate(req.params.userid, { password: hashedPass }, { new: true })
-              .select('firstName secondName email facebook telegram linkedin isAdmin hasPaid')
-              .then(() => {
-                return res.json({ message: 'password changed' });
-              });
+            User.findByIdAndUpdate(req.params.userid, { password: hashedPass }, { new: true }).then(() => {
+              return res.json({ message: 'password changed' });
+            });
           });
         } else {
           return res.status(400).json({
@@ -175,4 +171,44 @@ export const verify = async function (req: Request, res: Response, next: NextFun
       });
     }
   });
+};
+
+export const add_course = async function (req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findById(req.params.userid);
+    if (!user?.courses.includes(req.body.courseId)) {
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.userid,
+        { $push: { courses: req.body.courseId } },
+        { new: true },
+      ).populate('courses');
+      res.json(updatedUser);
+    } else {
+      res.json({
+        message: 'course already added',
+      });
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const remove_course = async function (req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findById(req.params.userid);
+    if (user?.courses.includes(req.body.courseId)) {
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.userid,
+        { $pull: { courses: req.body.courseId } },
+        { new: true },
+      ).populate('courses');
+      res.json(updatedUser);
+    } else {
+      res.json({
+        message: 'course not found',
+      });
+    }
+  } catch (error) {
+    return next(error);
+  }
 };

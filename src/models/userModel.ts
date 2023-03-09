@@ -7,8 +7,11 @@ export interface UserType extends Document {
   password: string;
 
   isAdmin: boolean;
-  hasPaid: boolean;
   confirmed: boolean;
+  courses: {
+    type: mongoose.Types.ObjectId;
+    ref: 'Course';
+  }[];
 
   facebook?: string;
   telegram?: string;
@@ -22,8 +25,8 @@ const UserSchema: Schema = new Schema({
   password: { type: String, required: true, maxLength: 100 },
 
   isAdmin: { type: Boolean, required: true },
-  hasPaid: { type: Boolean, required: true },
   confirmed: { type: Boolean, required: true, default: false },
+  courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
 
   facebook: { type: String, required: false },
   telegram: { type: String, required: false },
