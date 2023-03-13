@@ -4,3 +4,4 @@
 /src/data
 .DS_Store
 /build
+private_key.pem

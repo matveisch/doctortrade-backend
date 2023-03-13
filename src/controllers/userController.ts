@@ -63,7 +63,9 @@ export const log_in = function (req: Request, res: Response) {
       if (err) res.send(err);
 
       // generate a signed son web token with the contents of user object and return it in the response
-      const token = jwt.sign({ user }, process.env.JWT_SECRET ? process.env.JWT_SECRET : '');
+      const token = jwt.sign({ user }, process.env.JWT_SECRET ? process.env.JWT_SECRET : '', {
+        expiresIn: '7d',
+      });
       return res.json({ user, token });
     });
   })(req, res);
