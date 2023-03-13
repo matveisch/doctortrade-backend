@@ -52,12 +52,22 @@ export const log_in = function (req: Request, res: Response) {
       });
     }
 
+    console.log(user);
+    if (user.loggedIn) {
+      console.log('logged in');
+      return res.status(400).json({
+        message: 'You are already logged in on another device. Please log out first or contact support',
+      });
+    }
+
     if (!user.confirmed) {
       sendToken(user._id, user.email);
       return res.status(400).json({
         message: 'Please verify your email',
       });
     }
+
+    User.findByIdAndUpdate(user._id, { loggedIn: true }, { new: true });
 
     req.login(user, { session: false }, err => {
       if (err) res.send(err);
@@ -66,6 +76,7 @@ export const log_in = function (req: Request, res: Response) {
       const token = jwt.sign({ user }, process.env.JWT_SECRET ? process.env.JWT_SECRET : '', {
         expiresIn: '7d',
       });
+
       return res.json({ user, token });
     });
   })(req, res);
@@ -173,6 +184,15 @@ export const verify = async function (req: Request, res: Response, next: NextFun
       });
     }
   });
+};
+
+export const handle_logout = async function (req: Request, res: Response, next: NextFunction) {
+  try {
+    const loggedUser = await User.findByIdAndUpdate(req.params.userid, { loggedIn: false }, { new: true });
+    res.json(loggedUser?.loggedIn);
+  } catch (error) {
+    return next(error);
+  }
 };
 
 export const add_course = async function (req: Request, res: Response, next: NextFunction) {

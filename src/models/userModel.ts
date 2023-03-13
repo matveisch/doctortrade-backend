@@ -5,6 +5,7 @@ export interface UserType extends Document {
   secondName?: string;
   email: string;
   password: string;
+  loggedIn: boolean;
 
   isAdmin: boolean;
   confirmed: boolean;
@@ -23,6 +24,7 @@ const UserSchema: Schema = new Schema({
   secondName: { type: String, required: false, maxLength: 100 },
   email: { type: String, required: true },
   password: { type: String, required: true, maxLength: 100 },
+  loggedIn: { type: Boolean, required: true, default: false },
 
   isAdmin: { type: Boolean, required: true },
   confirmed: { type: Boolean, required: true, default: false },
