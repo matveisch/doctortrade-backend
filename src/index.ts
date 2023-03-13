@@ -25,7 +25,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(express.json());
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(cors());
 
 app.get('/', (req: Request, res: Response) => {
   res.json('hello world');
