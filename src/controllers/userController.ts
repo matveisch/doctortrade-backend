@@ -43,7 +43,7 @@ export const create_user = (req: Request, res: Response, next: NextFunction) => 
   });
 };
 
-export const log_in = function (req: Request, res: Response) {
+export const log_in = function (req: Request, res: Response, next: NextFunction) {
   passport.authenticate('local', { session: false }, (err, user) => {
     if (err || !user) {
       return res.status(400).json({
@@ -67,8 +67,6 @@ export const log_in = function (req: Request, res: Response) {
       });
     }
 
-    User.findByIdAndUpdate(user._id, { loggedIn: true }, { new: true });
-
     req.login(user, { session: false }, err => {
       if (err) res.send(err);
 
@@ -77,7 +75,10 @@ export const log_in = function (req: Request, res: Response) {
         expiresIn: '7d',
       });
 
-      return res.json({ user, token });
+      User.findByIdAndUpdate(user._id, { loggedIn: true }, { new: true }, (err, user) => {
+        if (err) return next(err);
+        res.json({ user, token });
+      });
     });
   })(req, res);
 };

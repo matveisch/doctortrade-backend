@@ -8,7 +8,6 @@ import userRouter from './routes/userRoutes';
 import sectionRoutes from './routes/sectionRoutes';
 import courseRoutes from './routes/courseRoutes';
 import './passport';
-import { S3Client } from '@aws-sdk/client-s3';
 
 dotenv.config();
 const port = process.env.PORT || 8000;
