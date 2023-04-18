@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Video from '../models/videoModel';
 import Section from '../models/sectionModel';
-import { getSignedUrl, getSignedCookies } from '@aws-sdk/cloudfront-signer';
+import { getSignedUrl } from '@aws-sdk/cloudfront-signer';
 
 export const videos_list = async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -52,9 +52,7 @@ export const log_in = function (req: Request, res: Response, next: NextFunction)
       });
     }
 
-    console.log(user);
     if (user.loggedIn) {
-      console.log('logged in');
       return res.status(400).json({
         message: 'You are already logged in on another device. Please log out first or contact support',
       });
