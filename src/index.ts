@@ -1,8 +1,7 @@
-import express, { NextFunction } from 'express';
+import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose, { ConnectOptions } from 'mongoose';
-import { Request, Response } from 'express';
 import videoRouter from './routes/videoRoutes';
 import userRouter from './routes/userRoutes';
 import sectionRoutes from './routes/sectionRoutes';
@@ -22,8 +21,7 @@ mongoose.connect(`${mongoDB}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 } as ConnectOptions);
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(express.json());
 app.use(cors());
