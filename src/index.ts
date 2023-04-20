@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose, { ConnectOptions } from 'mongoose';
@@ -8,6 +8,8 @@ import userRouter from './routes/userRoutes';
 import sectionRoutes from './routes/sectionRoutes';
 import courseRoutes from './routes/courseRoutes';
 import './passport';
+import noteRoutes from './routes/noteRoutes';
+import { handleError } from './middleware/middleware';
 
 dotenv.config();
 const port = process.env.PORT || 8000;
@@ -26,14 +28,13 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req: Request, res: Response) => {
-  res.json('hello world');
-});
-
 app.use('/videos', videoRouter);
 app.use('/user', userRouter);
 app.use('/section', sectionRoutes);
 app.use('/course', courseRoutes);
+app.use('/notes', noteRoutes);
+
+app.use(handleError);
 
 app.listen(port, function () {
   console.log('Listening on port 8000!');
