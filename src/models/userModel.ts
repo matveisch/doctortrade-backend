@@ -13,6 +13,10 @@ export interface UserType extends Document {
     type: mongoose.Types.ObjectId;
     ref: 'Course';
   }[];
+  books: {
+    type: mongoose.Types.ObjectId;
+    ref: 'Book';
+  }[];
 
   facebook?: string;
   telegram?: string;
@@ -29,6 +33,7 @@ const UserSchema: Schema = new Schema({
   isAdmin: { type: Boolean, required: true },
   confirmed: { type: Boolean, required: true, default: false },
   courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
+  books: [{ type: Schema.Types.ObjectId, ref: 'Book' }],
 
   facebook: { type: String, required: false },
   telegram: { type: String, required: false },
