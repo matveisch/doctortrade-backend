@@ -6,7 +6,7 @@ export async function isAdmin(req: any, res: Response, next: NextFunction) {
   next();
 }
 
-export async function handleError(err: Error, req: Request, res: Response) {
+export async function handleError(err: Error, req: Request, res: Response, next: NextFunction) {
   const { message } = err;
   res.status(500).json({ message });
 }

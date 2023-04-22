@@ -52,11 +52,11 @@ export const log_in = function (req: Request, res: Response, next: NextFunction)
       });
     }
 
-    if (user.loggedIn) {
-      return res.status(400).json({
-        message: 'You are already logged in on another device. Please log out first or contact support',
-      });
-    }
+    // if (user.loggedIn) {
+    //   return res.status(400).json({
+    //     message: 'You are already logged in on another device. Please log out first or contact support',
+    //   });
+    // }
 
     if (!user.confirmed) {
       sendToken(user._id, user.email);

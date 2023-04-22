@@ -9,6 +9,7 @@ import courseRoutes from './routes/courseRoutes';
 import './passport';
 import noteRoutes from './routes/noteRoutes';
 import { handleError } from './middleware/middleware';
+import bookRoute from './routes/bookRoute';
 
 dotenv.config();
 const port = process.env.PORT || 8000;
@@ -31,6 +32,7 @@ app.use('/user', userRouter);
 app.use('/section', sectionRoutes);
 app.use('/course', courseRoutes);
 app.use('/notes', noteRoutes);
+app.use('/book', bookRoute);
 
 app.use(handleError);
 

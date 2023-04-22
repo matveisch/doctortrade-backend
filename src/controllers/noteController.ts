@@ -6,10 +6,10 @@ export const create_note = async (req: Request, res: Response, next: NextFunctio
   try {
     const { userId, page }: { userId: string; page: number } = req.body;
 
-    const existingNote = await NoteModel.findOne({ page: page });
     const user = await UserModel.findById(userId);
-
     if (!user) throw new Error('user does not exist');
+
+    const existingNote = await NoteModel.findOne({ page: page, userId: user._id });
     if (existingNote) throw new Error('this page has been marked already');
 
     const note = new NoteModel({
@@ -28,8 +28,7 @@ export const create_note = async (req: Request, res: Response, next: NextFunctio
 
 export const get_notes = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId }: { userId: string } = req.body;
-
+    const { userId } = req.query;
     const notes = await NoteModel.find({ userId: userId }).exec();
     res.json(notes);
   } catch (e) {
