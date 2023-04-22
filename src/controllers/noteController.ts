@@ -36,6 +36,16 @@ export const get_notes = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
+export const updateNoteName = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { noteId } = req.params;
+    const note = await NoteModel.findByIdAndUpdate(noteId, { name: req.body.name }).exec();
+    res.json(note);
+  } catch (e) {
+    return next(e);
+  }
+};
+
 export const delete_note = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { noteId } = req.params;
