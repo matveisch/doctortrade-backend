@@ -7,8 +7,6 @@ import dotenv from 'dotenv';
 import { sendToken } from '../tokenSender';
 dotenv.config();
 
-// user user – username and password
-// email@mail.com user
 export const create_user = (req: Request, res: Response, next: NextFunction) => {
   // create user only if unique email, phone and username provided
   User.findOne({ email: req.body.email }, (err: Error | undefined, user: UserType) => {
@@ -44,7 +42,7 @@ export const create_user = (req: Request, res: Response, next: NextFunction) => 
 };
 
 export const log_in = function (req: Request, res: Response, next: NextFunction) {
-  passport.authenticate('local', { session: false }, (err, user) => {
+  passport.authenticate('local', { session: false }, (err: any, user: UserType) => {
     if (err || !user) {
       return res.status(400).json({
         message: 'Something is not right',
