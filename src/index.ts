@@ -10,7 +10,7 @@ import userRouter from './routes/userRoutes';
 import sectionRoutes from './routes/sectionRoutes';
 import courseRoutes from './routes/courseRoutes';
 import noteRoutes from './routes/noteRoutes';
-import bookRoute from './routes/bookRoute';
+import bookRoute from './routes/bookRoutes';
 import { handleError } from './middleware/middleware';
 
 dotenv.config();

@@ -23,7 +23,7 @@ export interface UserType extends Document {
   linkedin?: string;
 }
 
-const UserSchema: Schema = new Schema({
+const UserSchema: Schema = new Schema<UserType>({
   firstName: { type: String, required: true, maxLength: 100 },
   secondName: { type: String, required: false, maxLength: 100 },
   email: { type: String, required: true },

@@ -14,7 +14,7 @@ export const create_section = async (req: Request, res: Response, next: NextFunc
     });
 
     await section.save();
-    res.json(section);
+    return res.json(section);
   } catch (e) {
     return next(e);
   }
@@ -23,7 +23,7 @@ export const create_section = async (req: Request, res: Response, next: NextFunc
 export const get_sections = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const sections = await Section.find();
-    res.json(sections);
+    return res.json(sections);
   } catch (e) {
     return next(e);
   }
@@ -41,7 +41,7 @@ export const update_section = async (req: Request, res: Response, next: NextFunc
       },
       { new: true },
     ).populate('course');
-    res.json(section);
+    return res.json(section);
   } catch (e) {
     return next(e);
   }
@@ -67,7 +67,7 @@ export const delete_section = async (req: Request, res: Response, next: NextFunc
 
   try {
     const section = await Section.findByIdAndDelete(req.params.sectionid);
-    res.json(section);
+    return res.json(section);
   } catch (e) {
     return next(e);
   }

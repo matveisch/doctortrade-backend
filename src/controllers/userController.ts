@@ -33,7 +33,7 @@ export const create_user = (req: Request, res: Response, next: NextFunction) => 
 
         sendToken(user._id, user.email);
 
-        res.json(user);
+        return res.json(user);
       });
     } else {
       return res.status(400).json({
@@ -75,7 +75,7 @@ export const log_in = function (req: Request, res: Response, next: NextFunction)
 
       User.findByIdAndUpdate(user._id, { loggedIn: true }, { new: true }, (err, user) => {
         if (err) return next(err);
-        res.json({ user, token });
+        return res.json({ user, token });
       });
     });
   })(req, res);
@@ -84,7 +84,7 @@ export const log_in = function (req: Request, res: Response, next: NextFunction)
 export const get_users = async function (req: Request, res: Response, next: NextFunction) {
   try {
     const users = await User.find();
-    res.json(users);
+    return res.json(users);
   } catch (e) {
     return next(e);
   }
@@ -93,7 +93,7 @@ export const get_users = async function (req: Request, res: Response, next: Next
 export const get_user = async function (req: Request, res: Response, next: NextFunction) {
   try {
     const user = await User.findById(req.params.userid).populate('courses');
-    res.json(user);
+    return res.json(user);
   } catch (e) {
     return next(e);
   }
@@ -112,7 +112,7 @@ export const update_user = async function (req: Request, res: Response, next: Ne
       },
       { new: true },
     );
-    res.json(user);
+    return res.json(user);
   } catch (e) {
     return next(e);
   }
@@ -171,12 +171,12 @@ export const verify = async function (req: Request, res: Response, next: NextFun
   jwt.verify(token, process.env.JWT_SECRET ? process.env.JWT_SECRET : '', function (err, decoded) {
     if (err) {
       console.log(err);
-      res.send('Email verification failed, possibly the link is invalid or expired');
+      return res.send('Email verification failed, possibly the link is invalid or expired');
     } else {
       const { userId } = decoded as { userId: string };
       User.findByIdAndUpdate(userId, { confirmed: true }, { new: true }, function (err, user) {
         if (err) return next(err);
-        res.json({
+        return res.json({
           message: 'Email verified successfully',
           user,
         });
@@ -188,7 +188,7 @@ export const verify = async function (req: Request, res: Response, next: NextFun
 export const handle_logout = async function (req: Request, res: Response, next: NextFunction) {
   try {
     const loggedUser = await User.findByIdAndUpdate(req.params.userid, { loggedIn: false }, { new: true });
-    res.json(loggedUser?.loggedIn);
+    return res.json(loggedUser?.loggedIn);
   } catch (error) {
     return next(error);
   }
@@ -203,9 +203,9 @@ export const add_course = async function (req: Request, res: Response, next: Nex
         { $push: { courses: req.body.courseId } },
         { new: true },
       ).populate('courses');
-      res.json(updatedUser);
+      return res.json(updatedUser);
     } else {
-      res.json({
+      return res.status(409).json({
         message: 'course already added',
       });
     }
@@ -223,13 +223,28 @@ export const remove_course = async function (req: Request, res: Response, next: 
         { $pull: { courses: req.body.courseId } },
         { new: true },
       ).populate('courses');
-      res.json(updatedUser);
-    } else {
-      res.json({
-        message: 'course not found',
-      });
+      return res.json(updatedUser);
     }
+    return res.status(404).json({
+      message: 'course not found',
+    });
   } catch (error) {
     return next(error);
+  }
+};
+
+export const add_book = async function (req: Request, res: Response, next: NextFunction) {
+  const { userId } = req.params;
+  const { bookId } = req.body;
+
+  try {
+    const user = await User.findById(userId).exec();
+    if (!user?.books.includes(bookId)) {
+      const updatedUser = User.findByIdAndUpdate(userId, { $push: { books: bookId } }, { new: true }).populate('books');
+      return res.json(updatedUser);
+    }
+    return res.status(409).json({ message: 'book already added' });
+  } catch (e) {
+    return next(e);
   }
 };

@@ -6,7 +6,7 @@ import { getSignedUrl } from '@aws-sdk/cloudfront-signer';
 export const videos_list = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const videos = await Video.find().populate('section').populate('course');
-    res.json(videos);
+    return res.json(videos);
   } catch (err) {
     return next(err);
   }
@@ -15,7 +15,7 @@ export const videos_list = async (req: Request, res: Response, next: NextFunctio
 export const get_video_data = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const video = await Video.findById(req.params.videoid).populate('section').populate('course');
-    res.json(video);
+    return res.json(video);
   } catch (e) {
     return next(e);
   }
@@ -25,7 +25,7 @@ export const set_video_watch_status = async (req: Request, res: Response, next: 
   try {
     await Video.findByIdAndUpdate(req.params.videoid, { watched: req.body.watched }, { new: true });
     const videos = await Video.find().populate('section');
-    res.json(videos);
+    return res.json(videos);
   } catch (e) {
     return next(e);
   }
@@ -44,7 +44,7 @@ export const get_video = async (req: Request, res: Response, next: NextFunction)
       keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID || '',
     });
 
-    res.json(url);
+    return res.json(url);
   } catch (e) {
     return next(e);
   }
@@ -65,7 +65,7 @@ export const create_video = async (req: Request, res: Response, next: NextFuncti
 
     await video.save();
 
-    res.json(video);
+    return res.json(video);
   } catch (e) {
     return next(e);
   }
@@ -90,7 +90,7 @@ export const update_video = async (req: Request, res: Response, next: NextFuncti
       .populate('section')
       .populate('course');
 
-    res.json(video);
+    return res.json(video);
   } catch (e) {
     return next(e);
   }

@@ -20,7 +20,7 @@ export const create_note = async (req: Request, res: Response, next: NextFunctio
 
     await note.save();
 
-    res.json(note);
+    return res.json(note);
   } catch (err) {
     return next(err);
   }
@@ -30,7 +30,7 @@ export const get_notes = async (req: Request, res: Response, next: NextFunction)
   try {
     const { userId } = req.query;
     const notes = await NoteModel.find({ userId: userId }).exec();
-    res.json(notes);
+    return res.json(notes);
   } catch (e) {
     return next(e);
   }
@@ -40,7 +40,7 @@ export const updateNoteName = async (req: Request, res: Response, next: NextFunc
   try {
     const { noteId } = req.params;
     const note = await NoteModel.findByIdAndUpdate(noteId, { name: req.body.name }).exec();
-    res.json(note);
+    return res.json(note);
   } catch (e) {
     return next(e);
   }
@@ -50,7 +50,7 @@ export const delete_note = async (req: Request, res: Response, next: NextFunctio
   try {
     const { noteId } = req.params;
     const note = await NoteModel.findByIdAndDelete(noteId).exec();
-    res.json(note);
+    return res.json(note);
   } catch (e) {
     return next(e);
   }

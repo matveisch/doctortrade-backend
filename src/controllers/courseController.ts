@@ -9,7 +9,7 @@ export const create_course = async (req: Request, res: Response, next: NextFunct
     });
 
     await course.save();
-    res.json(course);
+    return res.json(course);
   } catch (e) {
     return next(e);
   }
@@ -18,7 +18,7 @@ export const create_course = async (req: Request, res: Response, next: NextFunct
 export const get_courses = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const courses = await CourseModel.find();
-    res.json(courses);
+    return res.json(courses);
   } catch (e) {
     return next(e);
   }
