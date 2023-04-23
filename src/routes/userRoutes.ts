@@ -12,6 +12,8 @@ import {
   verify,
   remove_course,
   handle_logout,
+  add_book,
+  remove_book,
 } from '../controllers/userController';
 import passport from 'passport';
 import { isAdmin } from '../middleware/middleware';
@@ -25,9 +27,11 @@ router.put('/:userid/updateEmail', passport.authenticate('jwt', { session: false
 router.put('/:userid/changePassword', passport.authenticate('jwt', { session: false }), change_password);
 router.put('/:userid/addCourse', passport.authenticate('jwt', { session: false }), add_course);
 router.put('/:userid/removeCourse', passport.authenticate('jwt', { session: false }), isAdmin, remove_course);
-router.put('/:userid/handleLogout', passport.authenticate('jwt', { session: false }), handle_logout);
+router.put('/:userId/addBook', add_book);
+router.put('/:userId/removeBook', remove_book);
 
 router.post('/signup', create_user);
 router.post('/login', log_in);
+router.put('/:userid/handleLogout', passport.authenticate('jwt', { session: false }), handle_logout);
 
 export default router;

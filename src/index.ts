@@ -34,7 +34,7 @@ app.use('/user', userRouter);
 app.use('/section', sectionRoutes);
 app.use('/course', courseRoutes);
 app.use('/notes', noteRoutes);
-app.use('/book', bookRoute);
+app.use('/books', bookRoute);
 
 app.use(handleError);
 

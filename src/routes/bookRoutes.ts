@@ -1,12 +1,13 @@
 import express from 'express';
-import { create_book, get_book, get_book_info } from '../controllers/bookController';
+import { create_book, get_book, get_book_info, get_books } from '../controllers/bookController';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const router = express.Router();
 
-router.get('/', get_book);
-router.get('/:id', get_book_info);
+router.get('/', get_books);
+router.get('/:id', get_book);
+router.get('/bookInfo/:id', get_book_info);
 router.post('/', create_book);
 
 export default router;

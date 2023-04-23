@@ -4,7 +4,11 @@ import bookModel, { BookType } from '../models/bookModel';
 import BookModel from '../models/bookModel';
 
 export const get_book = async (req: Request, res: Response, next: NextFunction) => {
+  const { bookId } = req.params;
+
   try {
+    const book = await bookModel.findById(bookId).exec();
+
     const bookName = 'beetrade-book.pdf';
     const bookPath = `https://d1trlqnyyov9mm.cloudfront.net/${bookName}`;
 
@@ -26,6 +30,15 @@ export const get_book_info = async (req: Request, res: Response, next: NextFunct
     const { id } = req.params;
     const book = await bookModel.findById(id).exec();
     return res.json(book);
+  } catch (e) {
+    return next(e);
+  }
+};
+
+export const get_books = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const books = await bookModel.find().exec();
+    return res.json(books);
   } catch (e) {
     return next(e);
   }

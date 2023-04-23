@@ -238,10 +238,32 @@ export const add_book = async function (req: Request, res: Response, next: NextF
   try {
     const user = await User.findById(userId).exec();
     if (!user?.books.includes(bookId)) {
-      const updatedUser = User.findByIdAndUpdate(userId, { $push: { books: bookId } }, { new: true }).populate('books');
+      const updatedUser = await User.findByIdAndUpdate(userId, { $push: { books: bookId } }, { new: true }).populate(
+        'books',
+      );
       return res.json(updatedUser);
     }
     return res.status(409).json({ message: 'book already added' });
+  } catch (e) {
+    return next(e);
+  }
+};
+
+export const remove_book = async function (req: Request, res: Response, next: NextFunction) {
+  const { userId } = req.params;
+  const { bookId } = req.body;
+
+  try {
+    const user = await User.findById(userId).exec();
+    if (user?.books.includes(bookId)) {
+      const updatedUser = await User.findByIdAndUpdate(userId, { $pull: { books: bookId } }, { new: true }).populate(
+        'books',
+      );
+      return res.json(updatedUser);
+    }
+    return res.status(404).json({
+      message: 'book not found',
+    });
   } catch (e) {
     return next(e);
   }
