@@ -6,7 +6,7 @@ dotenv.config();
 const router = express.Router();
 
 router.get('/', get_books);
-router.get('/:id', get_book);
+router.get('/:pathTitle', get_book);
 router.get('/bookInfo/:id', get_book_info);
 router.post('/', create_book);
 

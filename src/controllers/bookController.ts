@@ -4,13 +4,10 @@ import bookModel, { BookType } from '../models/bookModel';
 import BookModel from '../models/bookModel';
 
 export const get_book = async (req: Request, res: Response, next: NextFunction) => {
-  const { bookId } = req.params;
+  const { pathTitle } = req.params;
 
   try {
-    const book = await bookModel.findById(bookId).exec();
-
-    const bookName = 'beetrade-book.pdf';
-    const bookPath = `https://d1trlqnyyov9mm.cloudfront.net/${bookName}`;
+    const bookPath = `https://d1trlqnyyov9mm.cloudfront.net/${pathTitle}`;
 
     const url = getSignedUrl({
       url: bookPath,

@@ -50,6 +50,7 @@ export const log_in = function (req: Request, res: Response, next: NextFunction)
       });
     }
 
+    // todo: uncomment it as we'll get to final testing
     // if (user.loggedIn) {
     //   return res.status(400).json({
     //     message: 'You are already logged in on another device. Please log out first or contact support',
@@ -90,7 +91,7 @@ export const get_users = async function (req: Request, res: Response, next: Next
 
 export const get_user = async function (req: Request, res: Response, next: NextFunction) {
   try {
-    const user = await User.findById(req.params.userid).populate('courses');
+    const user = await User.findById(req.params.userid).populate('courses').populate('books');
     return res.json(user);
   } catch (e) {
     return next(e);
