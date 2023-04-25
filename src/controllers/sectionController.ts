@@ -21,8 +21,9 @@ export const create_section = async (req: Request, res: Response, next: NextFunc
 };
 
 export const get_sections = async (req: Request, res: Response, next: NextFunction) => {
+  const { courseId } = req.query;
   try {
-    const sections = await Section.find();
+    const sections = await Section.find({ course: courseId });
     return res.json(sections);
   } catch (e) {
     return next(e);

@@ -57,3 +57,24 @@ export const create_book = async (req: Request, res: Response, next: NextFunctio
     return next(e);
   }
 };
+
+export const update_book = async (req: Request, res: Response, next: NextFunction) => {
+  const { bookId } = req.params;
+  const { title, description, pathTitle }: BookType = req.body;
+
+  try {
+    const updatedBook = await BookModel.findByIdAndUpdate(
+      bookId,
+      {
+        title,
+        description,
+        pathTitle,
+      },
+      { new: true },
+    );
+
+    return res.json(updatedBook);
+  } catch (e) {
+    return next(e);
+  }
+};
