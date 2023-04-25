@@ -25,10 +25,10 @@ router.get('/verify/:token', verify);
 router.put('/:userid', passport.authenticate('jwt', { session: false }), update_user);
 router.put('/:userid/updateEmail', passport.authenticate('jwt', { session: false }), update_user_email);
 router.put('/:userid/changePassword', passport.authenticate('jwt', { session: false }), change_password);
-router.put('/:userid/addCourse', passport.authenticate('jwt', { session: false }), add_course);
+router.put('/:userid/addCourse', passport.authenticate('jwt', { session: false }), isAdmin, add_course);
 router.put('/:userid/removeCourse', passport.authenticate('jwt', { session: false }), isAdmin, remove_course);
-router.put('/:userId/addBook', add_book);
-router.put('/:userId/removeBook', remove_book);
+router.put('/:userId/addBook', passport.authenticate('jwt', { session: false }), isAdmin, add_book);
+router.put('/:userId/removeBook', passport.authenticate('jwt', { session: false }), isAdmin, remove_book);
 
 router.post('/signup', create_user);
 router.post('/login', log_in);
